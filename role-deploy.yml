@@ -1,0 +1,4 @@
+- name: deploy ngnix based on geerlingguy
+  hosts: dbservers
+  roles:
+    - geerlingguy.nginx
