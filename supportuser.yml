@@ -1,0 +1,27 @@
+---
+- name: Create support user and save disk usage report
+  hosts: all
+  become: yes
+
+  tasks:
+
+    - name: Create supportuser with sudo privileges
+      user:
+        name: supportuser
+        state: present
+        create_home: yes
+
+    - name: Add supportuser to sudoers
+      copy:
+        dest: /etc/sudoers.d/supportuser
+        content: "supportuser ALL=(ALL) NOPASSWD:ALL"
+        mode: '0440'
+
+    - name: Save output of df -h to /tmp/diskreport.txt
+      command: df -h
+      register: diskout
+
+    - name: Write disk report to file
+      copy:
+        dest: /tmp/diskreport.txt
+        content: "{{ diskout.stdout }}"
